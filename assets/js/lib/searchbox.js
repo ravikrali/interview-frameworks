@@ -3,6 +3,8 @@ import { go } from './router.js';
 
 let uid = 0;
 
+const SB_LABEL = { role: 'Role', variant: 'Variation', keywords: 'Keywords', question: 'Q' };
+
 export function mountSearch(host, opts = {}) {
   const id = 'sb' + (++uid);
   const placeholder = opts.placeholder || 'Search a question, role or framework';
@@ -43,7 +45,7 @@ export function mountSearch(host, opts = {}) {
     }
     list.innerHTML = hits.map((h, i) => `
       <li role="option" id="${id}-opt${i}" aria-selected="${i === active}" class="sb-opt${i === active ? ' is-active' : ''}" data-href="${h.href}">
-        <span class="sb-kind sb-kind-${h.kind}">${h.kind === 'role' ? 'Role' : h.kind === 'variant' ? 'Variation' : 'Q'}</span>
+        <span class="sb-kind sb-kind-${h.kind}">${SB_LABEL[h.kind] || 'Q'}</span>
         <span class="sb-text"><strong>${highlight(h.title, q)}</strong><em>${escapeHtml(h.sub)}</em></span>
       </li>`).join('');
     list.hidden = false;

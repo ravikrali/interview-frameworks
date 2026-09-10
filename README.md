@@ -15,15 +15,19 @@ Pick a role or search a question. Every answer page has the same four parts:
 
 ## Roles covered
 
-| Role | Questions |
-| --- | --- |
-| Enterprise Architect | 10 |
-| Director, Enterprise Architecture | 10 |
-| Director, Data Management | 10 |
-| Enterprise Data Architect | 10 |
-| MDM Architect | 10 |
+| Role | Questions | Keyword terms |
+| --- | --- | --- |
+| Enterprise Architect | 14 | 51 |
+| Director, Enterprise Architecture | 10 | 46 |
+| Director, Data Management | 10 | 51 |
+| Enterprise Data Architect | 10 | 50 |
+| MDM Architect | 10 | 47 |
 
-50 questions, 100 phrasing variations, 50 framework diagrams.
+54 questions, 114 phrasing variations, 54 framework diagrams, 245 keyword terms.
+
+## Keyword maps
+
+Each role has its own keyword map page at `#/role/<role-id>/keywords`. Terms are grouped into five themes, weighted 1 to 5, with the heaviest set repeated at the top as the short list to lead with. Reach them from the home page, from the card at the top of any role page, or by searching the role name.
 
 ## Getting around
 
@@ -34,6 +38,7 @@ Pick a role or search a question. Every answer page has the same four parts:
 | Close the suggestion list | `Escape` |
 | Jump between roles | Top navigation |
 | Browse every diagram | Framework library |
+| Open a role keyword map | Card at the top of any role page |
 | Move through a role | Previous and Next at the bottom of each answer |
 
 ## Adding a role
@@ -41,9 +46,10 @@ Pick a role or search a question. Every answer page has the same four parts:
 1. Add an entry to `assets/js/data/roles.js`. The `icon` field takes one of `blueprint`, `org`, `shield`, `model`, `hub`.
 2. Create `assets/js/data/q-<role-id>.js` following the shape of an existing file.
 3. Import it in `assets/js/data/index.js` and spread it into `questions`.
-4. Add the new file path to the `CORE` list in `sw.js` and bump `VERSION`.
+4. Add a keyword map entry under the new role id in `assets/js/data/role-keywords.js`.
+5. Add the new file path to the `CORE` list in `sw.js` and bump `VERSION`.
 
-The home page, search index, role pages and framework library all build themselves from that data. No other changes needed.
+The home page, search index, role pages, keyword maps and framework library all build themselves from that data. No other changes needed.
 
 ## Question shape
 

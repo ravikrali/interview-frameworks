@@ -1,4 +1,5 @@
 import { questions, roles } from '../data/index.js';
+import { roleKeywords } from '../data/role-keywords.js';
 
 const index = [];
 
@@ -11,6 +12,20 @@ roles.forEach(r => {
     href: `#/role/${r.id}`,
     hay: [r.name, r.short, r.tagline, ...r.focus].join(' ').toLowerCase()
   });
+
+  const kw = roleKeywords[r.id];
+  if (kw) {
+    index.push({
+      kind: 'keywords',
+      id: r.id + '-kw',
+      title: `${r.name} keyword map`,
+      sub: `${kw.groups.length} groups of terms to work into your answers`,
+      href: `#/role/${r.id}/keywords`,
+      hay: ['keyword map keywords terms vocabulary', r.name, r.short,
+        ...kw.groups.map(g => g.name),
+        ...kw.groups.flatMap(g => g.terms.map(t => t.t))].join(' ').toLowerCase()
+    });
+  }
 });
 
 questions.forEach(q => {
@@ -64,6 +79,7 @@ export function search(query, limit = 8) {
     }
     if (!matchedAll) continue;
     if (entry.kind === 'role') total += 5;
+    if (entry.kind === 'keywords') total += 2;
     if (entry.kind === 'question') total += 3;
     if (entry.kind === 'variant') total -= 6;
     scored.push({ ...entry, score: total });

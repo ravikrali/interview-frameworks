@@ -1,4 +1,5 @@
 import { roleById, themesFor, byRole, roles } from '../data/index.js';
+import { topTerms, termCount } from '../data/role-keywords.js';
 import { escapeHtml } from '../lib/search.js';
 
 export function renderRole(id) {
@@ -26,6 +27,22 @@ export function renderRole(id) {
       </ul>
     </div>`).join('');
 
+  const kwTotal = termCount(id);
+  const kwTeaser = kwTotal ? `
+    <section class="section">
+      <a class="kw-teaser reveal" href="#/role/${id}/keywords">
+        <div class="kw-teaser-body">
+          <p class="eyebrow">Keyword map</p>
+          <h2>${kwTotal} terms worth working into your answers</h2>
+          <p>Grouped by theme, sized by how much weight each one carries in this track.</p>
+        </div>
+        <div class="kw-teaser-cloud" aria-hidden="true">
+          ${topTerms(id, 6).map(t => `<span>${escapeHtml(t.t)}</span>`).join('')}
+        </div>
+        <span class="kw-teaser-go" aria-hidden="true">&rarr;</span>
+      </a>
+    </section>` : '';
+
   const others = roles.filter(r => r.id !== id).map(r =>
     `<a class="pill" href="#/role/${r.id}">${escapeHtml(r.short)}</a>`).join('');
 
@@ -40,6 +57,7 @@ export function renderRole(id) {
     </div>
     <div class="role-head-stat"><strong>${total}</strong><span>questions</span></div>
   </header>
+  ${kwTeaser}
   <section class="section">${body}</section>
   <section class="section">
     <div class="section-head"><h2>Switch role</h2></div>

@@ -2,7 +2,7 @@
    Precache the shell so the app opens offline, then serve cache-first
    for app assets and network-first for navigation. */
 
-const VERSION = 'if-v1';
+const VERSION = 'if-v2';
 const CORE = [
   './',
   './index.html',
@@ -15,6 +15,7 @@ const CORE = [
   './assets/js/lib/diagram.js',
   './assets/js/data/index.js',
   './assets/js/data/roles.js',
+  './assets/js/data/role-keywords.js',
   './assets/js/data/q-enterprise-architect.js',
   './assets/js/data/q-director-ea.js',
   './assets/js/data/q-director-data-management.js',
@@ -25,6 +26,7 @@ const CORE = [
   './assets/js/views/question.js',
   './assets/js/views/frameworks.js',
   './assets/js/views/results.js',
+  './assets/js/views/keywords.js',
   './assets/icons/icon.svg',
   './assets/icons/icon-192.png',
   './assets/icons/icon-512.png'

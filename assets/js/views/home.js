@@ -1,4 +1,5 @@
 import { roles, byRole, stats, allThemes } from '../data/index.js';
+import { termCount, roleKeywords } from '../data/role-keywords.js';
 import { escapeHtml } from '../lib/search.js';
 
 const ICONS = {
@@ -25,6 +26,15 @@ export function renderHome() {
     </a>`;
   }).join('');
 
+  const kwRow = roles.map(r => `
+    <a class="kwrow-card" href="#/role/${r.id}/keywords">
+      <div>
+        <strong>${escapeHtml(r.name)}</strong>
+        <span>${termCount(r.id)} terms</span>
+      </div>
+      <em aria-hidden="true">&rarr;</em>
+    </a>`).join('');
+
   const themes = allThemes().map(([t, n], i) =>
     `<a class="theme-chip reveal" style="--i:${i}" href="#/search?q=${encodeURIComponent(t)}">${escapeHtml(t)}<span>${n}</span></a>`
   ).join('');
@@ -47,6 +57,14 @@ export function renderHome() {
       <p>Five tracks today. The structure takes more without rework.</p>
     </div>
     <div class="role-grid">${cards}</div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>Keyword maps</h2>
+      <p>The terms worth working into your answers, grouped and weighted per role.</p>
+    </div>
+    <div class="kwrow">${kwRow}</div>
   </section>
 
   <section class="section">
@@ -76,6 +94,7 @@ export function renderHome() {
       <div><strong>${stats.questions}</strong><span>Questions</span></div>
       <div><strong>${stats.variants}</strong><span>Phrasing variations</span></div>
       <div><strong>${stats.frameworks}</strong><span>Frameworks</span></div>
+      <div><strong>${Object.keys(roleKeywords).reduce((n, k) => n + termCount(k), 0)}</strong><span>Keyword terms</span></div>
     </div>
   </section>`;
 }

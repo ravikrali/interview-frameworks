@@ -5,6 +5,7 @@ import { renderRole } from './views/role.js';
 import { renderQuestion } from './views/question.js';
 import { renderFrameworks } from './views/frameworks.js';
 import { renderResults } from './views/results.js';
+import { renderKeywords } from './views/keywords.js';
 import { roles } from './data/index.js';
 
 const view = document.getElementById('view');
@@ -80,6 +81,7 @@ route('/', () => {
   });
 });
 
+route('/role/:id/keywords', p => paint(renderKeywords(p.id)));
 route('/role/:id', p => paint(renderRole(p.id)));
 route('/q/:id', p => paint(renderQuestion(p.id)));
 route('/frameworks', () => paint(renderFrameworks()));

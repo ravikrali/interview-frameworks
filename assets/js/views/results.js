@@ -1,5 +1,7 @@
 import { search, highlight, escapeHtml } from '../lib/search.js';
 
+const LABEL = { role: 'Role', variant: 'Variation', keywords: 'Keyword map', question: 'Question' };
+
 export function renderResults(query) {
   const q = (query || '').trim();
   const hits = q ? search(q, 40) : [];
@@ -20,7 +22,7 @@ export function renderResults(query) {
 
   const rows = hits.map((h, i) => `
     <a class="result-row reveal" style="--i:${Math.min(i, 14)}" href="${h.href}">
-      <span class="result-kind result-kind-${h.kind}">${h.kind === 'role' ? 'Role' : h.kind === 'variant' ? 'Variation' : 'Question'}</span>
+      <span class="result-kind result-kind-${h.kind}">${LABEL[h.kind] || 'Question'}</span>
       <span class="result-main">
         <strong>${highlight(h.title, q)}</strong>
         <em>${escapeHtml(h.sub)}</em>

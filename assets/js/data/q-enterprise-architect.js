@@ -57,7 +57,9 @@ export default [
     q: 'How do you decide build versus buy?',
     variants: [
       'A vendor product covers 70 percent of the need. What do you do?',
-      'When is custom development the right call?'
+      'When is custom development the right call?',
+      'How do you stop a team from building something we could have bought?',
+      'What goes into your build versus buy business case?'
     ],
     answer: 'Build where the capability differentiates the business and the market has no mature answer. Buy everywhere else, then hold the line on configuration over customization.',
     tags: ['build vs buy', 'vendor', 'saas', 'differentiation', 'decision'],
@@ -487,6 +489,223 @@ export default [
       headline: 'Enterprise AI platform on LLM plus knowledge graph',
       detail: 'I architected the platform for intelligent search, protocol summarization, and site and investigator insight across the global study portfolio. The pipeline joined structured clinical metadata with unstructured protocol documents through RAG, with governed and auditable access.',
       metric: 'Analyst research time fell about 60 percent, which accelerated study start-up decisions.'
+    }
+  },
+  {
+    id: 'ea-tech-evaluation',
+    role: 'enterprise-architect',
+    theme: 'Technology Strategy',
+    q: 'How do you evaluate new and emerging technologies?',
+    variants: [
+      'A vendor is pitching a new platform. How do you assess it?',
+      'How do you decide when a technology is ready for the enterprise?',
+      'How do you keep up with technology without chasing every trend?'
+    ],
+    answer: 'Start from a business problem, never from the technology. Score it on fit, maturity, cost and our ability to run it, then prove it with a time-boxed pilot that has written exit criteria before it starts.',
+    tags: ['technology evaluation', 'emerging technology', 'tech radar', 'pilot', 'innovation', 'vendor', 'poc'],
+    framework: {
+      name: 'Technology Evaluation Gate',
+      source: 'Technology radar practice plus staged evaluation',
+      type: 'flow',
+      nodes: [
+        { label: 'Business trigger', detail: 'Which problem or capability gap does this serve. No trigger, no evaluation.' },
+        { label: 'Fit assessment', detail: 'Does it map to a capability on the roadmap. Does it displace something we run.' },
+        { label: 'Maturity check', detail: 'Vendor viability, install base, community, release cadence, reference customers.' },
+        { label: 'Run cost and skills', detail: 'License, infrastructure, support model, and whether we can hire for it.' },
+        { label: 'Time-boxed pilot', detail: 'Fixed budget and end date. Exit criteria written before the pilot starts.' },
+        { label: 'Radar placement', detail: 'Adopt, trial, contain or hold. Published so teams know where it stands.' },
+        { label: 'Review date', detail: 'Everything on the radar gets revisited. Positions expire.' }
+      ]
+    },
+    keywords: [
+      { t: 'Technology radar', w: 5 },
+      { t: 'Exit criteria', w: 5 },
+      { t: 'Vendor viability', w: 4 },
+      { t: 'Time-boxed pilot', w: 5 },
+      { t: 'Capability fit', w: 4 },
+      { t: 'Total cost of ownership', w: 4 },
+      { t: 'Skills availability', w: 4 },
+      { t: 'Adopt, trial, contain, hold', w: 4 },
+      { t: 'Reference customers', w: 3 },
+      { t: 'Support model', w: 3 },
+      { t: 'Reversibility', w: 3 },
+      { t: 'Hype versus proven', w: 3 },
+      { t: 'Proof of concept', w: 3 }
+    ],
+    phrases: [
+      'No business trigger, no evaluation. That filter removes most of the noise.',
+      'Write the exit criteria before the pilot starts, not after it goes well.',
+      'I ask who runs this at 2am and whether we can hire that person.',
+      'Contain is a valid answer. It means useful in one place, not everywhere.',
+      'Everything on the radar has a review date. Positions expire.'
+    ],
+    example: {
+      org: 'Parexel International',
+      headline: 'LLM and knowledge graph evaluation for the enterprise AI platform',
+      detail: 'The trigger was analyst time lost searching across the study portfolio. I scoped the evaluation to that problem, piloted retrieval over clinical metadata and protocol documents with governed access as a hard requirement, then scaled only after the pilot met its criteria.',
+      metric: 'Analyst research time fell about 60 percent once it moved past pilot.'
+    }
+  },
+  {
+    id: 'ea-app-rationalization',
+    role: 'enterprise-architect',
+    theme: 'Modernization',
+    q: 'How do you rationalize an application portfolio?',
+    variants: [
+      'We have 400 applications and no idea which ones matter. Where do you start?',
+      'How do you decide which applications to retire?',
+      'Walk me through an application portfolio assessment.'
+    ],
+    answer: 'Build one inventory, score every application on business value and technical fitness, then place each into the TIME model. The output is a funded retirement plan, not a spreadsheet.',
+    tags: ['application rationalization', 'portfolio', 'time model', 'retirement', 'modernization', 'apm'],
+    framework: {
+      name: 'TIME Application Rationalization',
+      source: 'Gartner TIME model on a value and fitness grid',
+      type: 'quadrant',
+      axes: { x: ['Low business value', 'High business value'], y: ['Poor technical fitness', 'Strong technical fitness'] },
+      nodes: [
+        { label: 'Eliminate', detail: 'Low value, weak technically. Retire it, archive the data, cancel the license.', pos: 'tl' },
+        { label: 'Migrate', detail: 'The business needs it, the technology is failing. Replatform or replace.', pos: 'tr' },
+        { label: 'Tolerate', detail: 'Low value but stable and cheap. Leave it alone and stop investing.', pos: 'bl' },
+        { label: 'Invest', detail: 'High value and healthy. Fund the roadmap and extend the capability.', pos: 'br' }
+      ]
+    },
+    keywords: [
+      { t: 'Application inventory', w: 5 },
+      { t: 'TIME model', w: 5 },
+      { t: 'Business value score', w: 5 },
+      { t: 'Technical fitness', w: 5 },
+      { t: 'Functional overlap', w: 4 },
+      { t: 'Run cost per application', w: 4 },
+      { t: 'License consolidation', w: 4 },
+      { t: 'Retirement plan', w: 4 },
+      { t: 'Data archival', w: 4 },
+      { t: 'Capability duplication', w: 4 },
+      { t: 'Shadow IT', w: 3 },
+      { t: 'End of support', w: 3 },
+      { t: 'Business owner sign-off', w: 4 }
+    ],
+    phrases: [
+      'One inventory first. Half the value comes from finding what nobody knew was running.',
+      'Overlap is the fastest saving. Three tools doing one job is a decision, not a mystery.',
+      'Tolerate is a real answer. Cheap and stable does not need my attention.',
+      'Retirement fails on data, not on the application. Plan the archive first.',
+      'Every disposition needs a business owner who signs it.'
+    ],
+    example: {
+      org: 'Parexel International',
+      headline: 'Portfolio assessment across 8 business domains',
+      detail: 'I scored platforms across clinical data management, finance, scheduling, site management and resourcing on value and technical health. Overlapping capability between domains was the clearest finding, and the review board turned each disposition into a funded sequence.',
+      metric: 'Duplicate platform spend stopped and downstream reconciliation effort fell about 40 percent.'
+    }
+  },
+  {
+    id: 'ea-tech-sprawl',
+    role: 'enterprise-architect',
+    theme: 'Technology Strategy',
+    q: 'How do you prevent technology sprawl across the enterprise?',
+    variants: [
+      'Every team picks its own tools. How do you get that under control?',
+      'How do you deal with shadow IT?',
+      'We have five tools doing the same thing. How did that happen and how do you stop it?'
+    ],
+    answer: 'Sprawl is a demand problem, not a discipline problem. Give teams an approved catalog that is faster than going around it, put one gate at procurement, and give every technology an owner and a sunset date.',
+    tags: ['technology sprawl', 'shadow it', 'standardization', 'catalog', 'procurement', 'lifecycle'],
+    framework: {
+      name: 'Sprawl Control Model',
+      source: 'Portfolio governance plus platform engineering practice',
+      type: 'pillars',
+      base: 'One inventory everyone trusts, refreshed automatically rather than by survey',
+      nodes: [
+        { label: 'Visibility', detail: 'One inventory fed by procurement, cloud billing and discovery. Not a spreadsheet.' },
+        { label: 'Single entry point', detail: 'Procurement and cloud accounts route through one intake. No side doors.' },
+        { label: 'Approved catalog', detail: 'A short list per capability, ready to use. Faster than sourcing something new.' },
+        { label: 'Named ownership', detail: 'Every technology has an owner accountable for cost, risk and upgrades.' },
+        { label: 'Sunset dates', detail: 'Renewals are decisions. Anything without a case at renewal goes.' }
+      ]
+    },
+    keywords: [
+      { t: 'Approved catalog', w: 5 },
+      { t: 'Technology inventory', w: 5 },
+      { t: 'Procurement gate', w: 5 },
+      { t: 'Shadow IT', w: 4 },
+      { t: 'Capability duplication', w: 4 },
+      { t: 'Named owner', w: 4 },
+      { t: 'Renewal review', w: 4 },
+      { t: 'Sunset date', w: 4 },
+      { t: 'Paved road', w: 4 },
+      { t: 'Cloud spend visibility', w: 4 },
+      { t: 'Exception with expiry', w: 3 },
+      { t: 'License consolidation', w: 3 },
+      { t: 'Reference pattern', w: 3 }
+    ],
+    phrases: [
+      'Teams go around the standard when the standard is slower. Fix the speed first.',
+      'One gate at procurement catches more sprawl than any policy document.',
+      'Shadow IT is usually a signal that the approved option did not exist.',
+      'Every renewal is a decision. That is where sprawl actually gets cut.',
+      'A technology without a named owner is already on its way to becoming a problem.'
+    ],
+    example: {
+      org: 'Parexel International',
+      headline: 'One board gating data platform investment across 8 domains',
+      detail: 'Domains were each sourcing their own data tooling. Routing every data platform investment through a single review board surfaced the overlaps before contracts were signed, and published patterns gave teams a faster default than starting a new procurement.',
+      metric: 'Prevented duplicate platform spend while keeping clinical systems aligned to regulatory requirements.'
+    }
+  },
+  {
+    id: 'ea-standardization',
+    role: 'enterprise-architect',
+    theme: 'Technology Strategy',
+    q: 'What factors influence enterprise technology standardization?',
+    variants: [
+      'How do you decide where to standardize and where to allow choice?',
+      'Is standardization always the right goal?',
+      'How much variation should an enterprise tolerate?'
+    ],
+    answer: 'Standardize where scale, risk or integration make variation expensive. Allow choice where the work is specialized and the blast radius is small. The test is what variation costs, not whether it offends the architecture.',
+    tags: ['standardization', 'standards', 'variation', 'governance', 'interoperability', 'strategy'],
+    framework: {
+      name: 'Standardization Decision Factors',
+      source: 'Standards economics applied to enterprise technology',
+      type: 'radial',
+      hub: 'Standardize when variation costs more than it buys',
+      nodes: [
+        { label: 'Scale and reuse', detail: 'How many teams touch it. One shared answer pays back across all of them.' },
+        { label: 'Risk and regulation', detail: 'Security, privacy and audit exposure. Regulated paths get standardized first.' },
+        { label: 'Integration need', detail: 'How much has to interoperate. Shared identifiers and contracts force agreement.' },
+        { label: 'Skills and hiring', detail: 'Can we staff and support it. Too many stacks thins the bench everywhere.' },
+        { label: 'Cost and licensing', detail: 'Volume pricing, support contracts, and the cost of running five of everything.' },
+        { label: 'Speed and autonomy', detail: 'Where the work is specialized, standards slow it down for no return.' }
+      ]
+    },
+    keywords: [
+      { t: 'Cost of variation', w: 5 },
+      { t: 'Interoperability', w: 5 },
+      { t: 'Scale and reuse', w: 5 },
+      { t: 'Regulatory exposure', w: 4 },
+      { t: 'Skills availability', w: 4 },
+      { t: 'Volume licensing', w: 4 },
+      { t: 'Blast radius', w: 4 },
+      { t: 'Team autonomy', w: 4 },
+      { t: 'Paved road', w: 4 },
+      { t: 'Supportability', w: 3 },
+      { t: 'Vendor leverage', w: 3 },
+      { t: 'Migration cost', w: 3 },
+      { t: 'Innovation space', w: 3 }
+    ],
+    phrases: [
+      'Standardize the interfaces before you standardize the tools.',
+      'The question is what variation costs, not whether it looks untidy.',
+      'Integration points and regulated paths are where I hold the line.',
+      'Every extra stack thins the bench that can support any of them.',
+      'Leave room for specialized work. A standard that blocks it will get ignored.'
+    ],
+    example: {
+      org: 'KPMG, Fortune 500 client',
+      headline: 'Standardizing on one data stack instead of per-team tooling',
+      detail: 'Teams had accumulated separate quality, catalog and integration tools. Standardizing on Snowflake with Informatica IDMC covering MDM, quality and catalog gave one supportable stack, one skills profile and one licensing position, while leaving analysis tooling open at the edges.',
+      metric: 'Time to insight moved from 3 weeks to 2 days. Data error rates fell 35 percent.'
     }
   }
 ];
