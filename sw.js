@@ -1,8 +1,8 @@
 /* Interview Frameworks service worker.
-   Precache the shell so the app opens offline, then serve cache-first
-   for app assets and network-first for navigation. */
+   Precache the shell so the app opens offline, then serve network-first with
+   a cache fallback so a publish is never a release behind. */
 
-const VERSION = 'if-v2';
+const VERSION = 'if-v3';
 const CORE = [
   './',
   './index.html',
@@ -67,18 +67,27 @@ self.addEventListener('fetch', e => {
     return;
   }
 
-  if (url.origin !== location.origin && !url.host.includes('fonts.g')) return;
+  const sameOrigin = url.origin === location.origin;
+  const isFont = url.host.includes('fonts.g');
+  if (!sameOrigin && !isFont) return;
 
+  const store = res => {
+    if (res && res.status === 200 && (res.type === 'basic' || res.type === 'cors')) {
+      const copy = res.clone();
+      caches.open(VERSION).then(c => c.put(req, copy));
+    }
+    return res;
+  };
+
+  // Fonts rarely change, so cache-first keeps them instant.
+  if (isFont) {
+    e.respondWith(caches.match(req).then(hit => hit || fetch(req).then(store)));
+    return;
+  }
+
+  // App code and content go network-first so a publish lands on the next load
+  // rather than the one after it. Cache is the offline fallback.
   e.respondWith(
-    caches.match(req).then(hit => {
-      if (hit) return hit;
-      return fetch(req).then(res => {
-        if (res && res.status === 200 && (res.type === 'basic' || res.type === 'cors')) {
-          const copy = res.clone();
-          caches.open(VERSION).then(c => c.put(req, copy));
-        }
-        return res;
-      }).catch(() => hit);
-    })
+    fetch(req).then(store).catch(() => caches.match(req))
   );
 });

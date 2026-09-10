@@ -123,6 +123,15 @@ start();
 
 /* ---------- pwa ---------- */
 if ('serviceWorker' in navigator) {
+  const hadController = !!navigator.serviceWorker.controller;
+  let reloaded = false;
+  // A newly published version takes over immediately instead of waiting for
+  // a second visit, so the content on screen is never a release behind.
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!hadController || reloaded) return;
+    reloaded = true;
+    location.reload();
+  });
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('sw.js').catch(() => {});
   });
