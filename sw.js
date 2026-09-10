@@ -2,7 +2,7 @@
    Precache the shell so the app opens offline, then serve network-first with
    a cache fallback so a publish is never a release behind. */
 
-const VERSION = 'if-v3';
+const VERSION = 'if-v4';
 const CORE = [
   './',
   './index.html',

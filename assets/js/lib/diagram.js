@@ -6,6 +6,25 @@ const NAVY = ['#12294a', '#1b3a63', '#24497a', '#2d5891', '#36679f', '#4176b4', 
 const ACCENT = '#d62606';
 const W = 1000;
 
+/* Label sizes in viewBox units. The canvas renders around 660px wide on a
+   desktop layout, so divide by roughly 1.5 for the size that reaches the eye.
+   Shape dimensions below are sized to hold two wrapped lines at these values. */
+const FS = {
+  flowWide: 23,   // four or fewer steps in a row
+  flowTight: 21,  // five or more steps in a row
+  flowNum: 14,
+  layer: 28,
+  layerNum: 18,
+  quadrant: 28,
+  axis: 18,
+  radial: 22,
+  radialHub: 20,
+  pyramid: 24,
+  pillar: 25,
+  pillarNum: 21,
+  base: 19
+};
+
 function esc(s) {
   return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 }
@@ -59,9 +78,9 @@ function flow(nodes, title) {
   for (let i = 0; i < nodes.length; i += perRow) rows.push(nodes.slice(i, i + perRow));
 
   const gap = 12;
-  const rowH = 108;
-  const rowGap = 34;
-  const notch = 20;
+  const rowH = 126;
+  const rowGap = 36;
+  const notch = 22;
   const height = rows.length * rowH + (rows.length - 1) * rowGap + 24;
   let body = '';
   let idx = 0;
@@ -87,13 +106,14 @@ function flow(nodes, title) {
       ].filter(Boolean).join(' ');
 
       const cx = x + segW / 2 + (lIn ? notch / 2 : 0) - (rOut ? notch / 4 : 0);
-      const fs = row.length > 4 ? 15 : 17;
-      const lines = wrap(n.label, segW - notch * 2 - 22, fs);
+      const fs = row.length > 4 ? FS.flowTight : FS.flowWide;
+      const lines = wrap(n.label, segW - notch * 2 - 18, fs);
+      const numX = (x + (lIn ? notch + 18 : 18)).toFixed(1);
       body += grp(idx, `
         <path d="${d}" fill="${fill}" filter="url(#fwShadow)"/>
-        <circle cx="${(x + (lIn ? notch + 16 : 16)).toFixed(1)}" cy="${y + 17}" r="10" fill="${ACCENT}"/>
-        <text x="${(x + (lIn ? notch + 16 : 16)).toFixed(1)}" y="${y + 21}" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">${idx + 1}</text>
-        ${textBlock(lines, cx, y + rowH / 2 + 10, fs, '#ffffff')}`);
+        <circle cx="${numX}" cy="${y + 20}" r="12" fill="${ACCENT}"/>
+        <text x="${numX}" y="${y + 24.5}" text-anchor="middle" font-size="${FS.flowNum}" font-weight="700" fill="#fff">${idx + 1}</text>
+        ${textBlock(lines, cx, y + rowH / 2 + 12, fs, '#ffffff')}`);
       idx++;
     });
 
@@ -110,7 +130,7 @@ function flow(nodes, title) {
 
 /* ---------- layers: stacked bands ---------- */
 function layers(nodes, title) {
-  const h = 74;
+  const h = 92;
   const gap = 10;
   const height = nodes.length * (h + gap) + 10;
   let body = '';
@@ -120,18 +140,18 @@ function layers(nodes, title) {
     body += grp(i, `
       <rect x="0" y="${y}" width="${W}" height="${h}" rx="10" fill="${fill}" filter="url(#fwShadow)"/>
       <rect x="0" y="${y}" width="7" height="${h}" rx="3" fill="${ACCENT}"/>
-      <rect x="${W - 74}" y="${y + 20}" width="34" height="34" rx="8" fill="#ffffff" opacity="0.14"/>
-      <text x="${W - 57}" y="${y + 43}" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff" opacity="0.85">${i + 1}</text>
-      ${textBlock(wrap(n.label, W - 200, 20), 34, y + h / 2 + 7, 20, '#ffffff', 'start')}`);
+      <rect x="${W - 80}" y="${y + (h - 40) / 2}" width="40" height="40" rx="9" fill="#ffffff" opacity="0.14"/>
+      <text x="${W - 60}" y="${y + h / 2 + 6}" text-anchor="middle" font-size="${FS.layerNum}" font-weight="700" fill="#ffffff" opacity="0.85">${i + 1}</text>
+      ${textBlock(wrap(n.label, W - 210, FS.layer), 34, y + h / 2 + 8, FS.layer, '#ffffff', 'start')}`);
   });
   return shell(height, body, title);
 }
 
 /* ---------- quadrant: 2x2 with axis labels ---------- */
 function quadrant(nodes, axes, title) {
-  const pad = { l: 96, t: 34, r: 20, b: 74 };
+  const pad = { l: 104, t: 36, r: 20, b: 80 };
   const boxW = (W - pad.l - pad.r) / 2;
-  const boxH = 172;
+  const boxH = 184;
   const height = pad.t + boxH * 2 + pad.b;
   const order = { tl: [0, 0], tr: [1, 0], bl: [0, 1], br: [1, 1] };
   const fills = { tl: NAVY[3], tr: NAVY[0], bl: NAVY[5], br: NAVY[1] };
@@ -144,7 +164,7 @@ function quadrant(nodes, axes, title) {
     const y = pad.t + cy * boxH;
     body += grp(i, `
       <rect x="${x + 5}" y="${y + 5}" width="${boxW - 10}" height="${boxH - 10}" rx="12" fill="${fills[pos]}" filter="url(#fwShadow)"/>
-      ${textBlock(wrap(n.label, boxW - 60, 21), x + boxW / 2, y + boxH / 2 + 7, 21, '#ffffff')}`);
+      ${textBlock(wrap(n.label, boxW - 56, FS.quadrant), x + boxW / 2, y + boxH / 2 + 8, FS.quadrant, '#ffffff')}`);
   });
 
   // axes
@@ -153,20 +173,21 @@ function quadrant(nodes, axes, title) {
     <path d="M ${x1} ${y1 + 16} l -10 -5 v 10 Z" fill="#8fa3bd"/>
     <line x1="${x0 - 16}" y1="${y1}" x2="${x0 - 16}" y2="${y0}" stroke="#8fa3bd" stroke-width="2"/>
     <path d="M ${x0 - 16} ${y0} l -5 10 h 10 Z" fill="#8fa3bd"/>
-    <text x="${x0 + 4}" y="${y1 + 42}" font-size="14" font-weight="600" fill="#4a5f7d">${esc(axes.x[0])}</text>
-    <text x="${x1}" y="${y1 + 42}" text-anchor="end" font-size="14" font-weight="600" fill="#4a5f7d">${esc(axes.x[1])}</text>
-    <text transform="translate(${x0 - 30} ${y1}) rotate(-90)" font-size="14" font-weight="600" fill="#4a5f7d">${esc(axes.y[0])}</text>
-    <text transform="translate(${x0 - 30} ${y0}) rotate(-90)" text-anchor="end" font-size="14" font-weight="600" fill="#4a5f7d">${esc(axes.y[1])}</text>`;
+    <text x="${x0 + 4}" y="${y1 + 46}" font-size="${FS.axis}" font-weight="600" fill="#4a5f7d">${esc(axes.x[0])}</text>
+    <text x="${x1}" y="${y1 + 46}" text-anchor="end" font-size="${FS.axis}" font-weight="600" fill="#4a5f7d">${esc(axes.x[1])}</text>
+    <text transform="translate(${x0 - 32} ${y1}) rotate(-90)" font-size="${FS.axis}" font-weight="600" fill="#4a5f7d">${esc(axes.y[0])}</text>
+    <text transform="translate(${x0 - 32} ${y0}) rotate(-90)" text-anchor="end" font-size="${FS.axis}" font-weight="600" fill="#4a5f7d">${esc(axes.y[1])}</text>`;
 
   return shell(height, body, title);
 }
 
 /* ---------- radial: hub with spokes ---------- */
 function radial(nodes, hub, title) {
-  const height = 470;
+  const height = 520;
   const cx = W / 2, cy = height / 2;
-  const rx = 340, ry = 168;
-  const hubRx = 158, hubRy = 66;
+  const rx = 352, ry = 186;
+  const hubRx = 168, hubRy = 80;
+  const bw = 268, bh = 88;
   let spokes = '';
   let cards = '';
 
@@ -174,18 +195,17 @@ function radial(nodes, hub, title) {
     const a = (-Math.PI / 2) + (i * 2 * Math.PI) / nodes.length;
     const px = cx + rx * Math.cos(a);
     const py = cy + ry * Math.sin(a);
-    const bw = 216, bh = 66;
     spokes += `<line x1="${cx}" y1="${cy}" x2="${px.toFixed(1)}" y2="${py.toFixed(1)}" stroke="${ACCENT}" stroke-width="1.5" opacity="0.4"/>`;
     cards += grp(i + 1, `
-      <rect x="${(px - bw / 2).toFixed(1)}" y="${(py - bh / 2).toFixed(1)}" width="${bw}" height="${bh}" rx="10"
+      <rect x="${(px - bw / 2).toFixed(1)}" y="${(py - bh / 2).toFixed(1)}" width="${bw}" height="${bh}" rx="11"
         fill="${NAVY[Math.min(i, NAVY.length - 1)]}" filter="url(#fwShadow)"/>
-      ${textBlock(wrap(n.label, bw - 26, 16), px, py + 5, 16, '#ffffff')}`);
+      ${textBlock(wrap(n.label, bw - 24, FS.radial), px, py + 6, FS.radial, '#ffffff')}`);
   });
 
   const hubBody = grp(0, `
-    <ellipse cx="${cx}" cy="${cy}" rx="${hubRx + 10}" ry="${hubRy + 10}" fill="${ACCENT}" opacity="0.1"/>
+    <ellipse cx="${cx}" cy="${cy}" rx="${hubRx + 11}" ry="${hubRy + 11}" fill="${ACCENT}" opacity="0.1"/>
     <ellipse cx="${cx}" cy="${cy}" rx="${hubRx}" ry="${hubRy}" fill="#0b1f3a" stroke="${ACCENT}" stroke-width="2.5" filter="url(#fwShadow)"/>
-    ${textBlock(wrap(hub || title, hubRx * 1.7, 15), cx, cy + 4, 15, '#ffffff')}`);
+    ${textBlock(wrap(hub || title, hubRx * 1.62, FS.radialHub), cx, cy + 5, FS.radialHub, '#ffffff')}`);
 
   return shell(height, spokes + cards + hubBody, title);
 }
@@ -193,11 +213,11 @@ function radial(nodes, hub, title) {
 /* ---------- pyramid: stacked tiers, widest at the bottom ---------- */
 function pyramid(nodes, title) {
   const n = nodes.length;
-  const tierH = 76;
+  const tierH = 86;
   const gap = 8;
   const height = n * (tierH + gap) + 12;
   const maxW = W - 40;
-  const minW = 300;
+  const minW = 360;
   let body = '';
   nodes.forEach((node, i) => {
     const wTop = minW + ((maxW - minW) * i) / n;
@@ -207,17 +227,17 @@ function pyramid(nodes, title) {
     const d = `M ${cx - wTop / 2} ${y} L ${cx + wTop / 2} ${y} L ${cx + wBot / 2} ${y + tierH} L ${cx - wBot / 2} ${y + tierH} Z`;
     body += grp(i, `
       <path d="${d}" fill="${NAVY[Math.min(i, NAVY.length - 1)]}" filter="url(#fwShadow)"/>
-      ${textBlock(wrap(node.label, wTop - 40, 17), cx, y + tierH / 2 + 6, 17, '#ffffff')}`);
+      ${textBlock(wrap(node.label, wTop - 36, FS.pyramid), cx, y + tierH / 2 + 7, FS.pyramid, '#ffffff')}`);
   });
   return shell(height, body, title);
 }
 
 /* ---------- pillars: columns on a base ---------- */
 function pillars(nodes, base, title) {
-  const gap = 16;
-  const colH = 210;
-  const baseH = 54;
-  const height = colH + baseH + 24;
+  const gap = 14;
+  const colH = 236;
+  const baseH = 62;
+  const height = colH + baseH + 26;
   const colW = (W - gap * (nodes.length - 1)) / nodes.length;
   let body = '';
   nodes.forEach((n, i) => {
@@ -225,12 +245,12 @@ function pillars(nodes, base, title) {
     body += grp(i, `
       <rect x="${x}" y="6" width="${colW}" height="${colH}" rx="12" fill="${NAVY[Math.min(i, NAVY.length - 1)]}" filter="url(#fwShadow)"/>
       <rect x="${x}" y="6" width="${colW}" height="6" rx="3" fill="${ACCENT}"/>
-      <circle cx="${x + colW / 2}" cy="60" r="19" fill="#ffffff" opacity="0.13"/>
-      <text x="${x + colW / 2}" y="67" text-anchor="middle" font-size="18" font-weight="700" fill="#ffffff" opacity="0.9">${i + 1}</text>
-      ${textBlock(wrap(n.label, colW - 28, 19), x + colW / 2, 138, 19, '#ffffff')}`);
+      <circle cx="${x + colW / 2}" cy="64" r="21" fill="#ffffff" opacity="0.13"/>
+      <text x="${x + colW / 2}" y="71.5" text-anchor="middle" font-size="${FS.pillarNum}" font-weight="700" fill="#ffffff" opacity="0.9">${i + 1}</text>
+      ${textBlock(wrap(n.label, colW - 20, FS.pillar), x + colW / 2, 156, FS.pillar, '#ffffff')}`);
   });
   body += `<rect x="0" y="${colH + 16}" width="${W}" height="${baseH}" rx="10" fill="#0b1f3a"/>
-    ${textBlock(wrap(base || 'Shared foundation', W - 60, 15), W / 2, colH + 16 + baseH / 2 + 5, 15, '#c8d6e8')}`;
+    ${textBlock(wrap(base || 'Shared foundation', W - 56, FS.base), W / 2, colH + 16 + baseH / 2 + 6, FS.base, '#c8d6e8')}`;
   return shell(height, body, title);
 }
 
